@@ -1,0 +1,155 @@
+version: 2.1
+
+orbs:
+    codecov: 'codecov/codecov@3.0.0'
+
+.env_common: &env_common
+    SHELL: '/bin/bash'
+
+.env_composer: &env_composer
+    COMPOSER_NO_INTERACTION: '1'
+    COMPOSER_MEMORY_LIMIT: '-1'
+    COMPOSER_DISABLE_XDEBUG_WARN: '1'
+    COMPOSER_CACHE_DIR: '/home/circleci/.cache/composer'
+
+executors:
+    php_min:
+        docker:
+            -
+                name: 'main'
+                image: 'cimg/php:8.1'
+                environment:
+                    <<: *env_common
+                    <<: *env_composer
+
+    php_plus1:
+        docker:
+            -
+                name: 'main'
+                image: 'cimg/php:8.2'
+                environment:
+                    <<: *env_common
+                    <<: *env_composer
+
+commands:
+    bash_env_init:
+        description: 'BASH_ENV - init'
+        steps:
+            -
+                run:
+                  name: 'BASH_ENV - init'
+                  command: |-
+                    echo "source '${PWD}/'.circleci/app.bash" >> "${BASH_ENV}"
+
+    composer_install:
+        description: 'Install Composer dependencies with cache restore and save'
+        steps:
+            -
+                restore_cache:
+                    name: 'Composer - cache restore'
+                    keys:
+                        - 'composer-{{ checksum "./composer.lock" }}-2'
+
+            -
+                run:
+                    name: 'Composer - install'
+                    command: >
+                        composer install --no-progress
+
+            -
+                save_cache:
+                    name: 'Composer - cache save'
+                    key: 'composer-{{ checksum "./composer.lock" }}-2'
+                    paths:
+                        - '~/.cache/composer'
+
+    lint:
+        description: 'Run linters'
+        steps:
+            -
+                run:
+                    name: 'Run linters'
+                    command: |
+                        "$(composer config bin-dir)/robo" lint
+
+    php_extension_install_and_enable:
+        parameters:
+            ext_name:
+                type: 'string'
+        description: 'PHP extension - install and enable - <<parameters.ext_name>>'
+        steps:
+            -
+                run:
+                    name: 'PHP extension - install and enable - <<parameters.ext_name>>'
+                    command: 'app_php_extension_install_and_enable <<parameters.ext_name>>'
+
+    test:
+        description: 'Run tests'
+        steps:
+            -
+                run:
+                    name: 'Test - unit'
+                    command: |
+                        "$(composer config bin-dir)/robo" test Unit
+            -
+                codecov/upload:
+                    flags: 'unit'
+                    file: './reports/machine/coverage/all/clover.xml'
+            -
+                store_test_results:
+                    name: 'Store unit test results'
+                    path: './reports/machine/unit'
+            -
+                run:
+                    name: 'Test - delete reports'
+                    command: |
+                        rm \
+                            --recursive \
+                            --force \
+                            './reports/'
+
+jobs:
+    build:
+        executor: 'php_min'
+        steps:
+            - 'checkout'
+            - 'composer_install'
+    lint:
+        executor: 'php_min'
+        steps:
+            - 'checkout'
+            - 'composer_install'
+            - 'lint'
+    test:
+        parameters:
+            executor:
+                type: 'string'
+        executor: '<<parameters.executor>>'
+        steps:
+            - 'checkout'
+            - 'bash_env_init'
+            -
+                php_extension_install_and_enable:
+                    ext_name: 'pcov'
+            - 'composer_install'
+            - 'test'
+
+workflows:
+    lint_and_test:
+        jobs:
+            -
+                build: {}
+            -
+                lint:
+                    requires:
+                        - 'build'
+            -
+                test:
+                    name: 'test_<<matrix.executor>>'
+                    requires:
+                        - 'build'
+                    matrix:
+                        parameters:
+                            executor:
+                                - 'php_min'
+                                - 'php_plus1'

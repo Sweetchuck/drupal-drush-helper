@@ -1,0 +1,68 @@
+{
+    "type": "library",
+    "name": "sweetchuck/drupal-drush-helper",
+    "description": "@todo project description",
+    "keywords": [],
+    "authors": [
+        {
+            "name": "Andor",
+            "role": "Maintainer",
+            "homepage": "https://github.com/Sweetchuck"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/Sweetchuck/drupal-drush-helper/graphs/contributors"
+        }
+    ],
+    "homepage": "https://github.com/Sweetchuck/drupal-drush-helper",
+    "support": {
+        "source": "https://github.com/Sweetchuck/drupal-drush-helper",
+        "issues": "https://github.com/Sweetchuck/drupal-drush-helper/issues"
+    },
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "sweetchuck/git-hooks": true
+        },
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "repositories": {},
+    "require": {
+        "php": ">=8.1",
+        "symfony/filesystem": "^6.3 || ^7.0",
+        "symfony/finder": "^6.3 || ^7.0"
+    },
+    "require-dev": {
+        "consolidation/robo": "^4.0",
+        "nuvoleweb/robo-config": "^3.0",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.3",
+        "squizlabs/php_codesniffer": "^3.6",
+        "sweetchuck/git-hooks": "2.x-dev",
+        "sweetchuck/robo-git": "3.x-dev",
+        "sweetchuck/robo-phpcs": "3.x-dev",
+        "sweetchuck/robo-phpstan": "2.x-dev",
+        "sweetchuck/robo-phpunit": "3.x-dev",
+        "sweetchuck/utils": "1.x-dev",
+        "symfony/error-handler": "^5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sweetchuck\\DrupalDrushHelper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sweetchuck\\DrupalDrushHelper\\Tests\\": "tests/src/"
+        }
+    },
+    "scripts": {},
+    "scripts-descriptions": {},
+    "extra": {}
+}

@@ -1,0 +1,42 @@
+### Common.
+/.cache/
+/reports/
+
+
+### Composer.
+/vendor/
+/sweetchuck-drupal-drush-helper-*.tar
+/sweetchuck-drupal-drush-helper-*.zip
+
+
+### Composer Suite.
+/composer.local.json
+/composer.local.lock
+
+
+### PHPUnit.
+/phpunit.xml
+
+
+### Codeception.
+/tests/_envs/*.local.yml
+/tests/_log/
+/tests/_support/_generated/
+/tests/*.suite.yml
+/codeception.yml
+
+
+### PHP Code Sniffer.
+/phpcs.xml
+
+
+### PHPStan.
+/phpstan.neon
+
+
+### Robo.
+/robo.yml
+
+
+### sweetchuck/git-hooks.
+/.git-hooks-local

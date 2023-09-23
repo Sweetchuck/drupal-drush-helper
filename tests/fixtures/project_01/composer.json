@@ -1,0 +1,9 @@
+{
+    "extra": {
+        "installer-paths": {
+            "drush/Commands/contrib/{$name}": [
+                "type:drupal-drush"
+            ]
+        }
+    }
+}

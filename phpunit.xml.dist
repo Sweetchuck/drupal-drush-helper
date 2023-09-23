@@ -1,0 +1,49 @@
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    cacheDirectory=".cache/phpunit"
+    colors="true">
+
+    <php>
+        <!-- E_DEPRECATED = 8192 -->
+        <!-- E_USER_DEPRECATED = 16384 -->
+        <!-- E_ALL = 32767 -->
+        <!-- E_ALL & ~E_DEPRECATED = 24575 -->
+        <!-- E_ALL & ~E_USER_DEPRECATED = 16383 -->
+        <ini name="error_reporting" value="32767" />
+
+        <!-- Do not limit the amount of memory tests take to run. -->
+        <ini name="memory_limit" value="-1" />
+
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
+    </php>
+
+    <source>
+        <include>
+            <directory>src/</directory>
+        </include>
+    </source>
+
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/src/Unit/</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <report>
+            <clover outputFile="reports/machine/coverage/all/clover.xml" />
+            <html
+                customCssFile="css/coverage/custom.css"
+                outputDirectory="reports/human/coverage/all/html" />
+            <php outputFile="reports/machine/coverage-php/all.php" />
+            <text outputFile="php://stdout" />
+            <xml outputDirectory="reports/machine/coverage/all/xml" />
+        </report>
+    </coverage>
+
+    <logging >
+        <testdoxHtml outputFile="reports/human/unit/junit.all.html" />
+        <junit outputFile="reports/machine/unit/junit.all.xml" />
+    </logging>
+</phpunit>
