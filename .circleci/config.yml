@@ -14,6 +14,7 @@ orbs:
 
 executors:
     php_min:
+        resource_class: 'small'
         docker:
             -
                 name: 'main'
@@ -23,10 +24,21 @@ executors:
                     <<: *env_composer
 
     php_plus1:
+        resource_class: 'small'
         docker:
             -
                 name: 'main'
                 image: 'cimg/php:8.2'
+                environment:
+                    <<: *env_common
+                    <<: *env_composer
+
+    php_plus2:
+        resource_class: 'small'
+        docker:
+            -
+                name: 'main'
+                image: 'cimg/php:8.3'
                 environment:
                     <<: *env_common
                     <<: *env_composer
@@ -153,3 +165,4 @@ workflows:
                             executor:
                                 - 'php_min'
                                 - 'php_plus1'
+                                - 'php_plus2'
