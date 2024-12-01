@@ -13,7 +13,7 @@ File: `tests/bootstrap.php`
 ```php
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Sweetchuck\DrupalDrushHelper\PhpunitBootstrapHelper;
 use Symfony\Component\Filesystem\Path;
