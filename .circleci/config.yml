@@ -6,6 +6,9 @@ orbs:
 .env_common: &env_common
     SHELL: '/bin/bash'
 
+.env_xdebug: &env_xdebug
+    XDEBUG_MODE: 'coverage'
+
 .env_composer: &env_composer
     COMPOSER_NO_INTERACTION: '1'
     COMPOSER_MEMORY_LIMIT: '-1'
@@ -18,7 +21,7 @@ executors:
         docker:
             -
                 name: 'main'
-                image: 'cimg/php:8.1'
+                image: 'cimg/php:8.2'
                 environment:
                     <<: *env_common
                     <<: *env_composer
@@ -28,7 +31,7 @@ executors:
         docker:
             -
                 name: 'main'
-                image: 'cimg/php:8.2'
+                image: 'cimg/php:8.3'
                 environment:
                     <<: *env_common
                     <<: *env_composer
@@ -38,9 +41,10 @@ executors:
         docker:
             -
                 name: 'main'
-                image: 'cimg/php:8.3'
+                image: 'cimg/php:8.4'
                 environment:
                     <<: *env_common
+                    <<: *env_xdebug
                     <<: *env_composer
 
 commands:
@@ -88,12 +92,17 @@ commands:
         parameters:
             ext_name:
                 type: 'string'
+            is_zend:
+                type: 'string'
         description: 'PHP extension - install and enable - <<parameters.ext_name>>'
         steps:
             -
                 run:
                     name: 'PHP extension - install and enable - <<parameters.ext_name>>'
-                    command: 'app_php_extension_install_and_enable <<parameters.ext_name>>'
+                    command: |
+                        app_php_extension_install_and_enable \
+                            '<<parameters.ext_name>>' \
+                            '<<parameters.is_zend>>'
 
     test:
         description: 'Run tests'
@@ -143,6 +152,7 @@ jobs:
             -
                 php_extension_install_and_enable:
                     ext_name: 'pcov'
+                    is_zend: 'false'
             - 'composer_install'
             - 'test'
 
